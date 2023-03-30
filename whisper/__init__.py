@@ -57,8 +57,7 @@ def _download(url: str, root: str, in_memory: bool) -> Union[bytes, str]:
     if os.path.isfile(download_target):
         with open(download_target, "rb") as f:
             model_bytes = f.read()
-        if hashlib.sha256(model_bytes).hexdigest() == expected_sha256:
-            return model_bytes if in_memory else download_target
+        return model_bytes if in_memory else download_target
 
     with urllib.request.urlopen(url) as source, open(download_target, "wb") as output:
         with tqdm(
@@ -120,7 +119,7 @@ def load_model(
 
     if name in _MODELS:
         checkpoint_file = _download(_MODELS[name], download_root, in_memory)
-        alignment_heads = _ALIGNMENT_HEADS[name]
+        alignment_heads = None
     elif os.path.isfile(name):
         checkpoint_file = open(name, "rb").read() if in_memory else name
         alignment_heads = None
